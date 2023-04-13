@@ -3,6 +3,8 @@
 (define-module (ellis home services bspwm)
   #:use-module (ellis util)
   #:use-module (guix gexp)
+  #:use-module (gnu packages wm)
+  #:use-module (gnu packages xdisorg)
   #:use-module (gnu services)
   #:use-module (gnu services configuration)
   #:use-module (gnu home services)
@@ -23,7 +25,7 @@
 (define (serialize-bspc-config field-name value)
   #~(string-append
       "bspc config "
-      #$(bspc-field-name field-name)
+      #$(bspc-setting-name field-name)
       " "
       (object->string #$value)
       "\n"))

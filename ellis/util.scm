@@ -1,6 +1,13 @@
 ;; Contains various helper utilities that are not specific to any specific
 ;; package or service.
-(define-module (ellis util))
+(define-module (ellis util)
+
+  #:use-module (guix gexp)
+  #:use-module (gnu services configuration)
+
+  #:export (
+    replace-char
+    generate-config))
 
 
 ;; Replace any 'old' characters with 'new' in 'str'.
@@ -11,6 +18,6 @@
 
 ;; ?
 (define (generate-config config fields filepath)
-  `((filepath ,(mixed-text-file
-		 filepath
+  `((,filepath ,(mixed-text-file
+		 (replace-char #\/ #\- filepath)
 		 (serialize-configuration config fields)))))
