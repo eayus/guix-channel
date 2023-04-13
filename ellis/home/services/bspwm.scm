@@ -6,7 +6,9 @@
   #:use-module (gnu services)
   #:use-module (gnu services configuration)
   #:use-module (gnu home services)
-  #:export (home-bspwm-service-type))
+  #:export (
+    home-bspwm-service-type
+    home-bspwm-configuration))
 
 
 ;;; Field Serialization.
