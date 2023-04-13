@@ -1,7 +1,11 @@
 ;; Contains a home service for the bspwm window manager. The service manages
 ;; configuration files and installation of packages.
 (define-module (ellis home services bspwm)
-  #:use-module (ellis util) (replace-char generate-config)
+  #:use-module (ellis util)
+  #:use-module (guix gexp)
+  #:use-module (gnu services)
+  #:use-module (gnu services configuration)
+  #:use-module (gnu home services)
   #:export (home-bspwm-service-type))
 
 
