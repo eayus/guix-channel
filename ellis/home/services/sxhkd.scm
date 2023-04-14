@@ -2,15 +2,18 @@
 ;; configuration files and installation of packages.
 (define-module (ellis home services sxhkd)
 
+  #:use-module (ellis util)
   #:use-module (guix gexp)
   #:use-module (gnu packages xdisorg)
   #:use-module (gnu services)
   #:use-module (gnu services configuration)
   #:use-module (gnu home services)
+  #:use-module (srfi srfi-1)
 
   #:export (
     home-sxhkd-service-type
-    home-sxhkd-configuration))
+    home-sxhkd-configuration
+    hotkey))
 
 
 ;;; Field Serialization.
@@ -20,14 +23,16 @@
   #~(string-join (list #$@(map symbol->string value)) " + "))
 
 (define (serialize-key _ value)
-  #~(symbol->string #$value))
+  #~(string-append " + " #$(symbol->string value) "\n\t"))
 
 (define (serialize-action _ value)
   value)
 
-(define (serialize-hotkeys _ value)
-  value)
+(define (serialize-hotkey config)
+  #~(string-append #$(serialize-configuration config hotkey-fields) "\n\n"))
 
+(define (serialize-hotkeys _ value)
+  #~(string-append #$@(map serialize-hotkey value)))
 
 ;;; Configuration Definition
 
@@ -43,13 +48,16 @@
     (serializer serialize-key))
   (action
     (string)
+    "Shell script action to perform on press"
     (serializer serialize-action)))
+
+(define (hotkey-list? xs) (every hotkey? xs))
 
 (define-configuration home-sxhkd-configuration
   (hotkeys
-    (list '());((lambda (xs) (every hotkey? xs)) '())
-    "List of hotkeys and their associated commands")
-    (serializer serialize-hotkeys))
+    (hotkey-list '())
+    "List of hotkeys and their associated commands"
+    (serializer serialize-hotkeys)));serialize-hotkeys))
 
 
 ;;; Services and Extensions
